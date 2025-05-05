@@ -30,3 +30,14 @@ use App\Http\Controllers\MikrotikUserImportController;
 Route::get('/mikrotik/import', [MikrotikUserImportController::class, 'showForm'])->name('mikrotik.form');
 Route::post('/mikrotik/preview', [MikrotikUserImportController::class, 'preview'])->name('mikrotik.preview');
 Route::post('/mikrotik/confirm', [MikrotikUserImportController::class, 'import'])->name('mikrotik.import');
+
+use App\Http\Controllers\CourseController;
+
+Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
+Route::post('/courses/store', [CourseController::class, 'store'])->name('courses.store');
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
+Route::delete('/courses/{course_number}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+

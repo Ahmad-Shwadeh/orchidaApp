@@ -36,11 +36,11 @@
 
 <div class="app-wrapper">
 
-  {{-- الهيدر --}}
+  {{-- ✅ الهيدر --}}
   <nav class="navbar navbar-expand" style="background-color: #FF6600;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
-      {{-- اليسار: روابط سريعة --}}
+      {{-- 🔹 روابط سريعة (يسار) --}}
       <ul class="navbar-nav flex-row gap-3">
         <li class="nav-item">
           <a class="nav-link text-white" href="{{ url('/') }}">
@@ -52,30 +52,30 @@
         </li>
       </ul>
 
-      {{-- اليمين: أيقونات + قائمة البروفايل --}}
+      {{-- 🔸 أيقونات + البروفايل (يمين) --}}
       <ul class="navbar-nav flex-row gap-3 align-items-center">
         <li class="nav-item"><a class="nav-link text-white" href="#"><i class="bi bi-search fs-5"></i></a></li>
+
         <li class="nav-item position-relative">
           <a class="nav-link text-white" href="#"><i class="bi bi-chat-text fs-5"></i></a>
           <span class="position-absolute top-0 start-0 translate-middle badge bg-danger">3</span>
         </li>
+
         <li class="nav-item position-relative">
           <a class="nav-link text-white" href="#"><i class="bi bi-bell fs-5"></i></a>
           <span class="position-absolute top-0 start-0 translate-middle badge bg-warning text-dark">15</span>
         </li>
 
-        {{-- قائمة البروفايل --}}
+        {{-- 🔘 قائمة البروفايل --}}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white fw-bold" href="#" role="button" data-bs-toggle="dropdown">
-             {{ session('user_name', 'مستخدم') }}
+            {{ session('user_name', 'مستخدم') }}
           </a>
           <ul class="dropdown-menu dropdown-menu-end text-end">
             <li><a class="dropdown-item" href="#">⚙️ تعديل البيانات</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                🔓 تسجيل خروج
-              </a>
+              <a class="dropdown-item text-danger" href="{{ route('logout') }}">🔓 تسجيل خروج</a>
             </li>
           </ul>
         </li>
@@ -83,7 +83,7 @@
     </div>
   </nav>
 
-  {{-- الشريط الجانبي --}}
+  {{-- ✅ الشريط الجانبي --}}
   <aside class="app-sidebar shadow" data-bs-theme="dark">
     <div class="sidebar-brand text-end pe-3">
       <a href="{{ url('/') }}" class="brand-link d-flex align-items-center gap-2 pe-3">
@@ -102,18 +102,22 @@
             </a>
           </li>
           <li class="nav-item">
-  <a href="{{ url('/mikrotik/users') }}" class="nav-link">
-    <i class="nav-icon bi bi-upload text-success">
-    <p>يوزرات المايكروتك </p>
+            <a href="{{ route('courses.create') }}" class="nav-link">
+              <i class="nav-icon bi bi-journal-plus text-primary"></i><p>تسجيل دورة</p>
+            </a>
+          </li>
+          <li class="nav-item">
+  <a href="{{ route('courses.index') }}" class="nav-link">
+    <i class="nav-icon bi bi-table text-info"></i>
+    <p>عرض الدورات</p>
   </a>
 </li>
-         
         </ul>
       </nav>
     </div>
   </aside>
 
-  {{-- المحتوى الرئيسي --}}
+  {{-- ✅ المحتوى الرئيسي --}}
   <main class="app-main">
     <div class="container-fluid py-4">
       @yield('content')
