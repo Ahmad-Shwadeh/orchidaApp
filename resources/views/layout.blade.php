@@ -100,16 +100,16 @@
             <a href="{{ url('/') }}" class="nav-link">
               <i class="nav-icon bi bi-house-door-fill"></i><p>الرئيسية</p>
             </a>
-          </li>
+          <!-- </li>
           <li class="nav-item">
             <a href="{{ route('courses.create') }}" class="nav-link">
               <i class="nav-icon bi bi-journal-plus text-primary"></i><p>تسجيل دورة</p>
             </a>
-          </li>
+          </li> -->
           <li class="nav-item">
   <a href="{{ route('courses.index') }}" class="nav-link">
-    <i class="nav-icon bi bi-table text-info"></i>
-    <p>عرض الدورات</p>
+    <i class="nav-icon bi bi-mortarboard-fill text-info"></i>
+    <p> الدورات الأساسية</p>
   </a>
 </li>
         </ul>

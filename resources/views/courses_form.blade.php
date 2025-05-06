@@ -1,4 +1,4 @@
-
+{{-- resources/views/courses_form.blade.php --}}
 @extends('layout')
 
 @section('title', 'تسجيل دورة جديدة')
@@ -13,8 +13,19 @@
       <div class="alert alert-success text-center">{{ session('success') }}</div>
     @endif
 
-    {{-- نموذج إدخال الدورة --}}
-    <form action="{{ route('courses.store') }}" method="POST">
+    {{-- رسالة خطأ --}}
+    @if($errors->any())
+      <div class="alert alert-danger">
+        <ul class="mb-0 text-center">
+          @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
+
+    {{-- نموذج الإدخال --}}
+    <form action="{{ route('courses.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
 
       <div class="mb-3">
@@ -37,9 +48,16 @@
         <textarea name="description" rows="3" class="form-control text-center"></textarea>
       </div>
 
+      <div class="mb-3">
+        <label class="form-label fw-bold">📎 مرفق الدورة (...PDF , Word , XLS , RAR , PNG)</label>
+        <input type="file" name="attachment" class="form-control"
+       accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.jpg,.png,.xls,.xlsx,.csv">
+
+      </div>
+
       <div class="d-flex justify-content-center gap-3">
         <button type="submit" class="btn btn-success px-4">💾 حفظ الدورة</button>
-        <a href="{{ url('/') }}" class="btn btn-secondary px-4">🏠 العودة للرئيسية</a>
+        <a href="{{ route('courses.index') }}" class="btn btn-secondary px-4">📋 عرض الدورات</a>
       </div>
     </form>
   </div>

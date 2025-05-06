@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CourseController extends Controller
 {
     /**
-     * عرض صفحة إنشاء دورة جديدة
+     * عرض نموذج إضافة دورة جديدة
      */
     public function create()
     {
-        return view('courses_form'); // صفحة الفورم
+        return view('courses_form');
     }
 
     /**
@@ -25,7 +26,7 @@ class CourseController extends Controller
     }
 
     /**
-     * حفظ دورة جديدة في قاعدة البيانات
+     * حفظ دورة جديدة
      */
     public function store(Request $request)
     {
@@ -34,20 +35,28 @@ class CourseController extends Controller
             'name'          => 'required|string|max:255',
             'hours'         => 'required|integer|min:1',
             'description'   => 'nullable|string',
+            'attachment' => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
+// 20MB
         ]);
+
+        $filename = null;
+        if ($request->hasFile('attachment')) {
+            $filename = $request->file('attachment')->store('attachments', 'public');
+        }
 
         DB::table('courses')->insert([
             'course_number' => $request->input('course_number'),
             'name'          => $request->input('name'),
             'hours'         => $request->input('hours'),
             'description'   => $request->input('description'),
+            'attachment'    => $filename,
         ]);
 
         return redirect()->back()->with('success', '✅ تم حفظ الدورة بنجاح.');
     }
 
     /**
-     * عرض نموذج تعديل دورة
+     * عرض نموذج تعديل الدورة
      */
     public function edit($course_number)
     {
@@ -69,7 +78,22 @@ class CourseController extends Controller
             'name'        => 'required|string|max:255',
             'hours'       => 'required|integer|min:1',
             'description' => 'nullable|string',
+            'attachment' => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
+// 20MB
         ]);
+
+        $course = DB::table('courses')->where('course_number', $course_number)->first();
+
+        $filename = $course->attachment;
+        if ($request->hasFile('attachment')) {
+            // حذف المرفق القديم إن وجد
+            if ($filename && Storage::disk('public')->exists($filename)) {
+                Storage::disk('public')->delete($filename);
+            }
+
+            // تخزين الملف الجديد
+            $filename = $request->file('attachment')->store('attachments', 'public');
+        }
 
         DB::table('courses')
             ->where('course_number', $course_number)
@@ -77,14 +101,26 @@ class CourseController extends Controller
                 'name'        => $request->input('name'),
                 'hours'       => $request->input('hours'),
                 'description' => $request->input('description'),
+                'attachment'  => $filename,
             ]);
 
         return redirect()->route('courses.index')->with('success', '✅ تم تعديل الدورة بنجاح.');
     }
-    public function destroy($course_number)
-{
-    DB::table('courses')->where('course_number', $course_number)->delete();
-    return redirect()->route('courses.index')->with('success', '🗑 تم حذف الدورة بنجاح.');
-}
 
+    /**
+     * حذف الدورة
+     */
+    public function destroy($course_number)
+    {
+        $course = DB::table('courses')->where('course_number', $course_number)->first();
+
+        // حذف المرفق من السيرفر إن وجد
+        if ($course && $course->attachment && Storage::disk('public')->exists($course->attachment)) {
+            Storage::disk('public')->delete($course->attachment);
+        }
+
+        DB::table('courses')->where('course_number', $course_number)->delete();
+
+        return redirect()->route('courses.index')->with('success', '🗑 تم حذف الدورة بنجاح.');
+    }
 }
