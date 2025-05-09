@@ -15,5 +15,7 @@ class UserAdmin extends Model
         'role',
     ];
 
+
     public $timestamps = true; // إذا كنت تستخدم الحقول created_at و updated_at
+    
 }

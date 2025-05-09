@@ -103,6 +103,12 @@
               <p>الرئيسية</p>
             </a>
           </li>
+          {{-- 🔹 رابط جديد لاستيراد بيانات الشبكة --}}
+                <li class="nav-item">
+                  <a href="{{ route('network.upload') }}" class="nav-link">
+                    <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i> رفع بيانات من ملف اكسل
+                  </a>
+                </li>
 
           {{-- 🔹 الدورات الأساسية (قائمة منسدلة) --}}
           <li class="nav-item">
@@ -119,12 +125,7 @@
                     <i class="bi bi-table text-primary nav-icon"></i> عرض الدورات
                   </a>
                 </li>
-                {{-- 🔹 رابط جديد لاستيراد بيانات الشبكة --}}
-                <li class="nav-item">
-                  <a href="{{ route('network.upload') }}" class="nav-link">
-                    <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i> رفع بيانات من ملف اكسل
-                  </a>
-                </li>
+                
               </ul>
             </div>
           </li>

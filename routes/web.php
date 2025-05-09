@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MikrotikUserImportController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\NetworkUserController;
+use App\Http\Controllers\CourseSectionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,11 @@ Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('c
 Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
 Route::delete('/courses/{course_number}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
+// داخل web.php
+Route::get('/course-sections/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])
+    ->name('sections.uploadForm');
+
+
 /*
 |--------------------------------------------------------------------------
 | إدارة مستخدمي الشبكة واستيرادهم من Excel
@@ -67,3 +73,14 @@ Route::post('/network-users/preview', [NetworkUserController::class, 'preview'])
 Route::post('/network-users/import', [NetworkUserController::class, 'importSelected'])->name('network.importSelected');
 Route::get('/network_users_index', [NetworkUserController::class, 'index'])->name('network.index');
 Route::delete('/network-users/clear', [NetworkUserController::class, 'clearAll'])->name('network.users.clear');
+
+
+
+// فورم جديد لاضافة شعب
+Route::get('/course-sections/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])
+    ->name('sections.uploadForm');
+    Route::post('/course-sections/import/{courseNumber}', [CourseSectionController::class, 'import'])
+    ->name('sections.import');
+    Route::post('/sections/import/{course}', [CourseSectionController::class, 'import'])->name('sections.import');
+    Route::post('/sections/{course_number}/store', [CourseSectionController::class, 'store'])->name('sections.store');
+    Route::get('/sections/course/{course_number}', [CourseSectionController::class, 'viewByCourse'])->name('sections.byCourse');

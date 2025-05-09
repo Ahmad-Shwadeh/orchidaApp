@@ -20,4 +20,9 @@ class Course extends Model
     ];
 
     public $timestamps = false; // لو ما عندك created_at و updated_at
+    public function sections()
+{
+    return $this->hasMany(CourseSection::class, 'course_number', 'course_number');
+}
+
 }
