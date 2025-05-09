@@ -33,7 +33,6 @@
 </head>
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-
 <div class="app-wrapper">
 
   {{-- ✅ الهيدر --}}
@@ -96,22 +95,40 @@
     <div class="sidebar-wrapper">
       <nav class="mt-2">
         <ul class="nav sidebar-menu flex-column" role="menu">
+
+          {{-- 🔹 الرئيسية --}}
           <li class="nav-item">
             <a href="{{ url('/') }}" class="nav-link">
-              <i class="nav-icon bi bi-house-door-fill"></i><p>الرئيسية</p>
+              <i class="nav-icon bi bi-house-door-fill"></i>
+              <p>الرئيسية</p>
             </a>
-          <!-- </li>
+          </li>
+
+          {{-- 🔹 الدورات الأساسية (قائمة منسدلة) --}}
           <li class="nav-item">
-            <a href="{{ route('courses.create') }}" class="nav-link">
-              <i class="nav-icon bi bi-journal-plus text-primary"></i><p>تسجيل دورة</p>
+            <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#coursesMenu" role="button" aria-expanded="false" aria-controls="coursesMenu">
+              <span>
+                <i class="nav-icon bi bi-mortarboard-fill text-info"></i> الدورات الأساسية
+              </span>
+              <i class="bi bi-chevron-down small"></i>
             </a>
-          </li> -->
-          <li class="nav-item">
-  <a href="{{ route('courses.index') }}" class="nav-link">
-    <i class="nav-icon bi bi-mortarboard-fill text-info"></i>
-    <p> الدورات الأساسية</p>
-  </a>
-</li>
+            <div class="collapse ps-3" id="coursesMenu">
+              <ul class="nav flex-column mt-2">
+                <li class="nav-item">
+                  <a href="{{ route('courses.index') }}" class="nav-link">
+                    <i class="bi bi-table text-primary nav-icon"></i> عرض الدورات
+                  </a>
+                </li>
+                {{-- 🔹 رابط جديد لاستيراد بيانات الشبكة --}}
+                <li class="nav-item">
+                  <a href="{{ route('network.upload') }}" class="nav-link">
+                    <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i> رفع بيانات من ملف اكسل
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
         </ul>
       </nav>
     </div>
