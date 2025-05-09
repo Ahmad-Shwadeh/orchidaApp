@@ -7,13 +7,13 @@ use App\Http\Controllers\MikrotikUserImportController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\NetworkUserController;
 use App\Http\Controllers\CourseSectionController;
+use App\Http\Controllers\StudentController;
 
 /*
 |--------------------------------------------------------------------------
-| صفحات الدخول والخروج واللوحة الرئيسية
+| 🏠 صفحات الدخول واللوحة الرئيسية
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', [DashboardController::class, 'index']);
 Route::view('/login/new', 'login_new_user')->name('login.new.user');
 Route::view('/logout/new', 'logout_new_user')->name('logout.new.user');
@@ -21,66 +21,80 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// لوحات المستخدمين
+// ✅ لوحات فرعية للمستخدمين
 Route::view('/dashboard/deema', 'deema_dashboard')->name('dashboard.deema');
 Route::view('/dashboard/ahmad', 'ahmad_dashboard')->name('dashboard.ahmad');
 Route::view('/dashboard/abofiras', 'abofiras_dashboard')->name('dashboard.abofiras');
 
 /*
 |--------------------------------------------------------------------------
-| إدارة مستخدمي ميكروتك
+| 🌐 إدارة مستخدمي ميكروتك
 |--------------------------------------------------------------------------
 */
-
-Route::get('/mikrotik/users', function () {
-    return view('mikrotik_users');
-})->name('mikrotik.users');
-
-Route::get('/mikrotik/import', [MikrotikUserImportController::class, 'showForm'])->name('mikrotik.form');
-Route::post('/mikrotik/preview', [MikrotikUserImportController::class, 'preview'])->name('mikrotik.preview');
-Route::post('/mikrotik/confirm', [MikrotikUserImportController::class, 'import'])->name('mikrotik.import');
+Route::prefix('mikrotik')->name('mikrotik.')->group(function () {
+    Route::view('/users', 'mikrotik_users')->name('users');
+    Route::get('/import', [MikrotikUserImportController::class, 'showForm'])->name('form');
+    Route::post('/preview', [MikrotikUserImportController::class, 'preview'])->name('preview');
+    Route::post('/confirm', [MikrotikUserImportController::class, 'import'])->name('import');
+});
 
 /*
 |--------------------------------------------------------------------------
-| إدارة الدورات التدريبية
+| 📚 إدارة الدورات التدريبية
 |--------------------------------------------------------------------------
 */
-
-Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
-Route::post('/courses/store', [CourseController::class, 'store'])->name('courses.store');
-Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
-Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
-Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
-Route::delete('/courses/{course_number}', [CourseController::class, 'destroy'])->name('courses.destroy');
-
-// داخل web.php
-Route::get('/course-sections/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])
-    ->name('sections.uploadForm');
-
+Route::prefix('courses')->name('courses.')->group(function () {
+    Route::get('/', [CourseController::class, 'index'])->name('index');
+    Route::get('/create', [CourseController::class, 'create'])->name('create');
+    Route::post('/store', [CourseController::class, 'store'])->name('store');
+    Route::get('/{course}/edit', [CourseController::class, 'edit'])->name('edit');
+    Route::put('/{course}', [CourseController::class, 'update'])->name('update');
+    Route::delete('/{course_number}', [CourseController::class, 'destroy'])->name('destroy');
+});
 
 /*
 |--------------------------------------------------------------------------
-| إدارة مستخدمي الشبكة واستيرادهم من Excel
+| 🏫 إدارة الشعب (Course Sections)
 |--------------------------------------------------------------------------
 */
+Route::prefix('sections')->name('sections.')->group(function () {
+    Route::get('/course/{course_number}', [CourseSectionController::class, 'viewByCourse'])->name('byCourse');
+    Route::get('/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])->name('uploadForm');
+    Route::post('/import/{course_number}', [CourseSectionController::class, 'import'])->name('import');
+    Route::post('/{course_number}/store', [CourseSectionController::class, 'store'])->name('store');
+});
 
-Route::get('/network-users/upload', [NetworkUserController::class, 'showUploadForm'])->name('network.upload');
-Route::post('/network-users/import-simple', [NetworkUserController::class, 'importSimple'])->name('network.importSimple');
-Route::get('/network-users/list', [NetworkUserController::class, 'list'])->name('network.users');
+/*
+|--------------------------------------------------------------------------
+| 🌐 إدارة مستخدمي الشبكة
+|--------------------------------------------------------------------------
+*/
+Route::prefix('network-users')->name('network.')->group(function () {
+    Route::get('/upload', [NetworkUserController::class, 'showUploadForm'])->name('upload');
+    Route::post('/import-simple', [NetworkUserController::class, 'importSimple'])->name('importSimple');
+    Route::get('/list', [NetworkUserController::class, 'list'])->name('users');
+    Route::delete('/clear', [NetworkUserController::class, 'clearAll'])->name('users.clear');
 
-// ❌ غير مستخدمين حالياً ولكن محفوظين لو احتجتهم مستقبلاً
-Route::post('/network-users/preview', [NetworkUserController::class, 'preview'])->name('network.preview');
-Route::post('/network-users/import', [NetworkUserController::class, 'importSelected'])->name('network.importSelected');
-Route::get('/network_users_index', [NetworkUserController::class, 'index'])->name('network.index');
-Route::delete('/network-users/clear', [NetworkUserController::class, 'clearAll'])->name('network.users.clear');
+    // 🛠 إضافات مستقبلية
+    Route::post('/preview', [NetworkUserController::class, 'preview'])->name('preview');
+    Route::post('/import', [NetworkUserController::class, 'importSelected'])->name('importSelected');
+    Route::get('/index', [NetworkUserController::class, 'index'])->name('index');
+});
 
+// 👨‍🎓 إدارة الطلاب
+Route::prefix('students')->name('students.')->group(function () {
+    // عرض الطلاب في شعبة معينة
+    Route::get('/{section_id}', [StudentController::class, 'index'])->name('index');
 
+    // تسجيل يدوي
+    Route::get('/create/{course_number}/{section_id}', [StudentController::class, 'create'])->name('create');
+    Route::post('/store/{course_number}/{section_id}', [StudentController::class, 'store'])->name('store');
 
-// فورم جديد لاضافة شعب
-Route::get('/course-sections/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])
-    ->name('sections.uploadForm');
-    Route::post('/course-sections/import/{courseNumber}', [CourseSectionController::class, 'import'])
-    ->name('sections.import');
-    Route::post('/sections/import/{course}', [CourseSectionController::class, 'import'])->name('sections.import');
-    Route::post('/sections/{course_number}/store', [CourseSectionController::class, 'store'])->name('sections.store');
-    Route::get('/sections/course/{course_number}', [CourseSectionController::class, 'viewByCourse'])->name('sections.byCourse');
+    // استيراد من Excel
+    Route::get('/import/{course_number}/{section_id}', [StudentController::class, 'showImportForm'])->name('importForm');
+    Route::post('/import/{course_number}/{section_id}', [StudentController::class, 'import'])->name('import');
+
+    // تعديل الحالة بناءً على student_id
+    Route::put('/status/{student_id}', [StudentController::class, 'updateStatus'])->name('updateStatus');
+});
+
