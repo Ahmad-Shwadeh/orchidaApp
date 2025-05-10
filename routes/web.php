@@ -5,8 +5,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MikrotikUserImportController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\NetworkUserController;
 use App\Http\Controllers\CourseSectionController;
+use App\Http\Controllers\NetworkUserController;
 use App\Http\Controllers\StudentController;
 
 /*
@@ -62,6 +62,11 @@ Route::prefix('sections')->name('sections.')->group(function () {
     Route::get('/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])->name('uploadForm');
     Route::post('/import/{course_number}', [CourseSectionController::class, 'import'])->name('import');
     Route::post('/{course_number}/store', [CourseSectionController::class, 'store'])->name('store');
+
+    // ✅ تعديل وحذف الشعب
+    Route::get('/{section_id}/edit', [CourseSectionController::class, 'edit'])->name('edit');
+    Route::put('/{section_id}/update', [CourseSectionController::class, 'update'])->name('update');
+    Route::delete('/{section_id}', [CourseSectionController::class, 'destroy'])->name('destroy');
 });
 
 /*
@@ -70,31 +75,29 @@ Route::prefix('sections')->name('sections.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('network-users')->name('network.')->group(function () {
-    Route::get('/upload', [NetworkUserController::class, 'showUploadForm'])->name('upload');
+    Route::get('/upload', [NetworkUserController::class, 'showUploadForm'])->name('upload'); // ✅ زر رفع البيانات
     Route::post('/import-simple', [NetworkUserController::class, 'importSimple'])->name('importSimple');
     Route::get('/list', [NetworkUserController::class, 'list'])->name('users');
     Route::delete('/clear', [NetworkUserController::class, 'clearAll'])->name('users.clear');
 
-    // 🛠 إضافات مستقبلية
+    // إضافات مستقبلية
     Route::post('/preview', [NetworkUserController::class, 'preview'])->name('preview');
     Route::post('/import', [NetworkUserController::class, 'importSelected'])->name('importSelected');
     Route::get('/index', [NetworkUserController::class, 'index'])->name('index');
 });
 
-// 👨‍🎓 إدارة الطلاب
+/*
+|--------------------------------------------------------------------------
+| 👨‍🎓 إدارة الطلاب
+|--------------------------------------------------------------------------
+*/
 Route::prefix('students')->name('students.')->group(function () {
-    // عرض الطلاب في شعبة معينة
     Route::get('/{section_id}', [StudentController::class, 'index'])->name('index');
-
-    // تسجيل يدوي
     Route::get('/create/{course_number}/{section_id}', [StudentController::class, 'create'])->name('create');
     Route::post('/store/{course_number}/{section_id}', [StudentController::class, 'store'])->name('store');
-
-    // استيراد من Excel
     Route::get('/import/{course_number}/{section_id}', [StudentController::class, 'showImportForm'])->name('importForm');
     Route::post('/import/{course_number}/{section_id}', [StudentController::class, 'import'])->name('import');
 
-    // تعديل الحالة بناءً على student_id
+    // ✅ تحديث الحالة والملاحظات باستخدام student_id
     Route::put('/status/{student_id}', [StudentController::class, 'updateStatus'])->name('updateStatus');
 });
-

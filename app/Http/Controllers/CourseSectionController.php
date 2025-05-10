@@ -23,25 +23,23 @@ class CourseSectionController extends Controller
     }
 
     /**
-     * تخزين شعبة جديدة يدوياً من فورم
+     * تخزين شعبة جديدة يدوياً
      */
     public function store(Request $request, $course_number)
     {
         $request->validate([
-            'section_id'       => 'required|unique:course_sections,section_id',
-            'start_date'       => 'required|date',
-            'room_number'      => 'required|string|max:255',
-            'instructor_name'  => 'required|string|max:255',
-            'status'           => 'required|string|in:مفتوحة,مغلقة,ممتلئة,جارية,منتهية',
+            'section_id'      => 'required|unique:course_sections,section_id',
+            'start_date'      => 'required|date',
+            'room_number'     => 'required|string|max:255',
+            'instructor_name' => 'required|string|max:255',
+            'status'          => 'required|in:مفتوحة,مغلقة,ممتلئة,جارية,منتهية',
         ]);
 
-        // تحقق من وجود الدورة
         $course = Course::where('course_number', $course_number)->first();
         if (!$course) {
             return redirect()->route('courses.index')->with('error', '❌ رقم الدورة غير صالح.');
         }
 
-        // تخزين الشعبة
         CourseSection::create([
             'course_number'    => $course_number,
             'section_id'       => $request->section_id,
@@ -51,28 +49,93 @@ class CourseSectionController extends Controller
             'status'           => $request->status,
         ]);
 
-        return redirect()->route('courses.index')->with('success', '✅ تم إضافة الشعبة بنجاح.');
+        return redirect()->route('sections.byCourse', ['course_number' => $course_number])
+            ->with('success', '✅ تم إضافة الشعبة بنجاح.');
     }
 
     /**
-     * عرض جميع الشعب في صفحة واحدة
+     * عرض جميع الشعب (غير مستخدمة حالياً)
      */
     public function index()
     {
-        $sections = CourseSection::orderBy('start_date')->get(); // ✅ ترتيب حسب تاريخ البدء
+        $sections = CourseSection::orderBy('start_date')->get();
         return view('course_sections_index', compact('sections'));
     }
-    public function viewByCourse($course_number)
-{
-    $course = Course::where('course_number', $course_number)->first();
 
-    if (!$course) {
-        return redirect()->route('courses.index')->with('error', '❌ رقم الدورة غير موجود.');
+    /**
+     * عرض الشعب الخاصة بدورة محددة
+     */
+    public function viewByCourse($course_number)
+    {
+        $course = Course::where('course_number', $course_number)->first();
+
+        if (!$course) {
+            return redirect()->route('courses.index')->with('error', '❌ رقم الدورة غير موجود.');
+        }
+
+        $sections = $course->sections ?? [];
+
+        return view('course_sections_index', compact('sections', 'course'));
     }
 
-    $sections = $course->sections ?? [];
+    /**
+     * عرض فورم تعديل شعبة
+     */
+    public function edit($section_id)
+    {
+        $section = CourseSection::where('section_id', $section_id)->first();
 
-    return view('course_sections_index', compact('sections', 'course'));
-}
+        if (!$section) {
+            return redirect()->back()->with('error', '❌ لم يتم العثور على الشعبة.');
+        }
 
+        return view('course_sections_edit', compact('section'));
+    }
+
+    /**
+     * تحديث بيانات شعبة
+     */
+    public function update(Request $request, $section_id)
+    {
+        $section = CourseSection::where('section_id', $section_id)->first();
+
+        if (!$section) {
+            return redirect()->back()->with('error', '❌ لم يتم العثور على الشعبة.');
+        }
+
+        $request->validate([
+            'start_date'      => 'required|date',
+            'room_number'     => 'required|string|max:255',
+            'instructor_name' => 'required|string|max:255',
+            'status'          => 'required|in:مفتوحة,مغلقة,ممتلئة,جارية,منتهية',
+        ]);
+
+        $section->update([
+            'start_date'      => $request->start_date,
+            'room_number'     => $request->room_number,
+            'instructor_name' => $request->instructor_name,
+            'status'          => $request->status,
+        ]);
+
+        return redirect()->route('sections.byCourse', ['course_number' => $section->course_number])
+            ->with('success', '✅ تم تعديل الشعبة بنجاح.');
+    }
+
+    /**
+     * حذف شعبة
+     */
+    public function destroy($section_id)
+    {
+        $section = CourseSection::where('section_id', $section_id)->first();
+
+        if (!$section) {
+            return redirect()->back()->with('error', '❌ لم يتم العثور على الشعبة.');
+        }
+
+        $course_number = $section->course_number;
+        $section->delete();
+
+        return redirect()->route('sections.byCourse', ['course_number' => $course_number])
+            ->with('success', '🗑️ تم حذف الشعبة بنجاح.');
+    }
 }

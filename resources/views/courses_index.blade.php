@@ -86,15 +86,27 @@
                   @endif
                 </td>
 
-                {{-- ✅ الإجراءات --}}
-                <td>
-                  <a href="{{ route('courses.edit', $course->course_number) }}" class="btn btn-sm btn-warning mb-1">✏️ تعديل</a>
-                  <form action="{{ route('courses.destroy', $course->course_number) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('هل أنت متأكد من حذف الدورة؟');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-sm btn-danger">🗑 حذف</button>
-                  </form>
-                </td>
+                {{-- ✅ عمود الإجراءات --}}
+<td class="d-flex flex-column gap-1">
+
+  {{-- تعديل الدورة --}}
+  <a href="{{ route('courses.edit', ['course' => $course->course_number]) }}"
+     class="btn btn-warning btn-sm w-100">
+    ✏️ تعديل
+  </a>
+
+  {{-- حذف الدورة --}}
+  <form action="{{ route('courses.destroy', ['course_number' => $course->course_number]) }}" method="POST">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm w-100"
+            onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الدورة؟')">
+      🗑️ حذف
+    </button>
+  </form>
+
+</td>
+
               </tr>
             @endforeach
           </tbody>

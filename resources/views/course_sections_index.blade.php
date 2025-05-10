@@ -8,7 +8,7 @@
   {{-- ✅ العنوان وزر الرجوع --}}
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="text-primary fw-bold mb-0">
-      📘 الشعب التابعة لدورة  <span class="text-dark">{{ $course->name ?? '—' }}</span>
+      📘 الشعب التابعة لدورة <span class="text-dark">{{ $course->name ?? '—' }}</span>
     </h4>
     <a href="{{ route('courses.index') }}" class="btn btn-secondary">
       <i class="bi bi-arrow-left-circle"></i> الرجوع إلى قائمة الدورات
@@ -36,6 +36,7 @@
               <th>👨‍🏫 اسم المدرّب</th>
               <th>🔖 الحالة</th>
               <th>🎓 الطلاب</th>
+              <th>⚙️ الإجراءات</th>
             </tr>
           </thead>
           <tbody>
@@ -61,22 +62,42 @@
                   </span>
                 </td>
 
-                {{-- ✅ زر الطلاب --}}
-                <td class="d-flex flex-column gap-1">
-                  <a href="{{ route('students.create', ['course_number' => $course->course_number, 'section_id' => $section->section_id]) }}"
-                     class="btn btn-outline-success btn-sm">
-                    ➕ تسجيل طالب
-                  </a>
+                {{-- ✅ الطلاب --}}
+                <td>
+                  <div class="d-flex flex-column gap-1">
+                    <a href="{{ route('students.create', ['course_number' => $course->course_number, 'section_id' => $section->section_id]) }}"
+                       class="btn btn-outline-success btn-sm">
+                      ➕ تسجيل طالب
+                    </a>
 
-                  <a href="{{ route('students.importForm', [$course->course_number, $section->section_id]) }}"
-                     class="btn btn-outline-primary btn-sm">
-                    📥 استيراد طلاب
-                  </a>
+                    <a href="{{ route('students.importForm', [$course->course_number, $section->section_id]) }}"
+                       class="btn btn-outline-primary btn-sm">
+                      📥 استيراد طلاب
+                    </a>
 
-                  <a href="{{ route('students.index', ['section_id' => $section->section_id]) }}"
-                     class="btn btn-outline-info btn-sm">
-                    👁️ عرض الطلاب
-                  </a>
+                    <a href="{{ route('students.index', ['section_id' => $section->section_id]) }}"
+                       class="btn btn-outline-info btn-sm">
+                      👁️ عرض الطلاب
+                    </a>
+                  </div>
+                </td>
+
+                {{-- ✅ الإجراءات --}}
+                <td>
+                  <div class="d-flex flex-column gap-1">
+                    <a href="{{ route('sections.edit', ['section_id' => $section->section_id]) }}"
+                       class="btn btn-warning btn-sm">
+                      ✏️ تعديل
+                    </a>
+
+                    <form action="{{ route('sections.destroy', ['section_id' => $section->section_id]) }}"
+                          method="POST"
+                          onsubmit="return confirm('هل أنت متأكد من حذف الشعبة؟')">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger btn-sm">🗑️ حذف</button>
+                    </form>
+                  </div>
                 </td>
               </tr>
             @endforeach
@@ -85,7 +106,6 @@
       </div>
     @endif
   </div>
-
 </div>
 
 {{-- ✅ سكربت الفلترة --}}

@@ -35,8 +35,7 @@ class CourseController extends Controller
             'name'          => 'required|string|max:255',
             'hours'         => 'required|integer|min:1',
             'description'   => 'nullable|string',
-            'attachment' => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
-// 20MB
+            'attachment'    => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
         ]);
 
         $filename = null;
@@ -45,10 +44,10 @@ class CourseController extends Controller
         }
 
         DB::table('courses')->insert([
-            'course_number' => $request->input('course_number'),
-            'name'          => $request->input('name'),
-            'hours'         => $request->input('hours'),
-            'description'   => $request->input('description'),
+            'course_number' => $request->course_number,
+            'name'          => $request->name,
+            'hours'         => $request->hours,
+            'description'   => $request->description,
             'attachment'    => $filename,
         ]);
 
@@ -63,7 +62,7 @@ class CourseController extends Controller
         $course = DB::table('courses')->where('course_number', $course_number)->first();
 
         if (!$course) {
-            return redirect()->route('courses.index')->with('error', '❌ لم يتم العثور على الدورة');
+            return redirect()->route('courses.index')->with('error', '❌ لم يتم العثور على الدورة.');
         }
 
         return view('courses_edit', compact('course'));
@@ -78,29 +77,30 @@ class CourseController extends Controller
             'name'        => 'required|string|max:255',
             'hours'       => 'required|integer|min:1',
             'description' => 'nullable|string',
-            'attachment' => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
-// 20MB
+            'attachment'  => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
         ]);
 
         $course = DB::table('courses')->where('course_number', $course_number)->first();
 
+        if (!$course) {
+            return redirect()->route('courses.index')->with('error', '❌ لم يتم العثور على الدورة.');
+        }
+
         $filename = $course->attachment;
         if ($request->hasFile('attachment')) {
-            // حذف المرفق القديم إن وجد
             if ($filename && Storage::disk('public')->exists($filename)) {
                 Storage::disk('public')->delete($filename);
             }
 
-            // تخزين الملف الجديد
             $filename = $request->file('attachment')->store('attachments', 'public');
         }
 
         DB::table('courses')
             ->where('course_number', $course_number)
             ->update([
-                'name'        => $request->input('name'),
-                'hours'       => $request->input('hours'),
-                'description' => $request->input('description'),
+                'name'        => $request->name,
+                'hours'       => $request->hours,
+                'description' => $request->description,
                 'attachment'  => $filename,
             ]);
 
@@ -114,13 +114,12 @@ class CourseController extends Controller
     {
         $course = DB::table('courses')->where('course_number', $course_number)->first();
 
-        // حذف المرفق من السيرفر إن وجد
         if ($course && $course->attachment && Storage::disk('public')->exists($course->attachment)) {
             Storage::disk('public')->delete($course->attachment);
         }
 
         DB::table('courses')->where('course_number', $course_number)->delete();
 
-        return redirect()->route('courses.index')->with('success', '🗑 تم حذف الدورة بنجاح.');
+        return redirect()->route('courses.index')->with('success', '🗑️ تم حذف الدورة بنجاح.');
     }
 }
