@@ -16,11 +16,11 @@ class NetworkUserController extends Controller
      */
     public function showUploadForm()
     {
-        return view('upload_preview');
+        return view('network.upload_preview');
     }
 
     /**
-     * استيراد العمود الأول من ملف Excel وتخزينه
+     * استيراد المستخدمين من العمود الأول فقط
      */
     public function importSimple(Request $request)
     {
@@ -28,15 +28,17 @@ class NetworkUserController extends Controller
             'excel_file' => 'required|file|mimes:xlsx,xls,csv|max:20480'
         ]);
 
+        // تخزين الملف مؤقتًا
         $filename = uniqid('excel_') . '.' . $request->file('excel_file')->getClientOriginalExtension();
-        $path = $request->file('excel_file')->storeAs('attachments', $filename, 'public');
+        $path = $request->file('excel_file')->storeAs('uploads', $filename, 'public');
         $fullPath = storage_path('app/public/' . $path);
 
         if (!file_exists($fullPath)) {
-            return redirect()->route('network.upload')->with('error', '❌ فشل في الوصول إلى الملف المرفوع.');
+            return redirect()->route('network.upload')->with('error', '❌ لم يتم العثور على الملف المرفوع.');
         }
 
-        $data = Excel::toArray([], $fullPath);
+        // قراءة بيانات Excel
+        $data = Excel::toArray([], $request->file('excel_file'));
         $rows = $data[0] ?? [];
 
         if (count($rows) < 2) {
@@ -48,7 +50,7 @@ class NetworkUserController extends Controller
         $skipped = [];
 
         foreach ($rows as $index => $row) {
-            if ($index === 0) continue;
+            if ($index === 0) continue; // تجاهل العناوين
 
             $username = trim($row[0] ?? '');
 
@@ -68,7 +70,7 @@ class NetworkUserController extends Controller
             $inserted++;
         }
 
-        $skippedFile = null;
+        // إنشاء ملف بالصفوف المرفوضة إن وجدت
         if (!empty($skipped)) {
             $skippedPath = 'public/skipped/skipped_' . now()->format('Ymd_His') . '.xlsx';
 
@@ -83,34 +85,33 @@ class NetworkUserController extends Controller
             }, $skippedPath, 'local');
 
             $skippedFile = asset(str_replace('public/', 'storage/', $skippedPath));
-        }
+            Storage::disk('public')->delete($path); // حذف الملف المؤقت
 
-        Storage::disk('public')->delete($path);
-
-        if ($skippedFile) {
             return redirect()->route('network.upload')->with('error',
                 '⚠️ تم تجاهل بعض الصفوف. <a href="' . $skippedFile . '" class="btn btn-warning btn-sm mt-2" target="_blank">تحميل الصفوف المرفوضة</a>'
             );
         }
 
-        return redirect()->route('network.upload')->with('success', '✅ تم تخزين ' . $inserted . ' مستخدم جديد بنجاح.');
+        Storage::disk('public')->delete($path);
+
+        return redirect()->route('network.upload')->with('success', '✅ تم إدخال ' . $inserted . ' مستخدم بنجاح.');
     }
 
     /**
-     * عرض المستخدمين حسب تاريخ التخصيص (الأقدم أولًا)
+     * عرض جميع المستخدمين
      */
     public function list()
     {
-        $users = NetworkUser::orderBy('assigned_at', 'asc')->get(); // ← حسب الأقدم
-        return view('network_users_index', compact('users'));
+        $users = NetworkUser::orderBy('assigned_at', 'asc')->get();
+        return view('network.network_users_index', compact('users'));
     }
 
     /**
-     * حذف جميع المستخدمين
+     * حذف كل المستخدمين
      */
     public function clearAll()
     {
         NetworkUser::truncate();
-        return redirect()->route('network.users')->with('success', '🗑 تم حذف جميع المستخدمين بنجاح.');
+        return redirect()->route('network.users')->with('success', '🗑️ تم حذف جميع المستخدمين بنجاح.');
     }
 }

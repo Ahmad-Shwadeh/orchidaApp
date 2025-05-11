@@ -1,4 +1,5 @@
-@extends('layout')
+@extends('layouts.layout')
+
 
 @section('title', '📋 عرض جميع الشعب')
 
@@ -17,13 +18,16 @@
 
   {{-- ✅ شريط البحث --}}
   <div class="mb-3">
-    <input type="text" id="sectionSearch" class="form-control text-center fw-bold" placeholder="🔍 ابحث برقم الشعبة أو اسم المدرب أو القاعة...">
+    <input type="text" id="sectionSearch" class="form-control text-center fw-bold"
+           placeholder="🔍 ابحث برقم الشعبة أو اسم المدرب أو القاعة...">
   </div>
 
   {{-- ✅ جدول عرض الشعب --}}
   <div class="card shadow rounded-4 p-4 border-0">
     @if($sections->isEmpty())
-      <div class="alert alert-info text-center fs-5 mb-0">🚫 لا توجد شعب مسجلة حالياً لهذه الدورة.</div>
+      <div class="alert alert-info text-center fs-5 mb-0">
+        🚫 لا توجد شعب مسجلة حالياً لهذه الدورة.
+      </div>
     @else
       <div class="table-responsive">
         <table class="table table-bordered table-hover text-center align-middle">
@@ -62,33 +66,25 @@
                   </span>
                 </td>
 
-                {{-- ✅ الطلاب --}}
+                {{-- 🎓 الطلاب --}}
                 <td>
                   <div class="d-flex flex-column gap-1">
                     <a href="{{ route('students.create', ['course_number' => $course->course_number, 'section_id' => $section->section_id]) }}"
-                       class="btn btn-outline-success btn-sm">
-                      ➕ تسجيل طالب
-                    </a>
+                       class="btn btn-outline-success btn-sm">➕ تسجيل طالب</a>
 
                     <a href="{{ route('students.importForm', [$course->course_number, $section->section_id]) }}"
-                       class="btn btn-outline-primary btn-sm">
-                      📥 استيراد طلاب
-                    </a>
+                       class="btn btn-outline-primary btn-sm">📥 استيراد طلاب</a>
 
                     <a href="{{ route('students.index', ['section_id' => $section->section_id]) }}"
-                       class="btn btn-outline-info btn-sm">
-                      👁️ عرض الطلاب
-                    </a>
+                       class="btn btn-outline-info btn-sm">👁️ عرض الطلاب</a>
                   </div>
                 </td>
 
-                {{-- ✅ الإجراءات --}}
+                {{-- ⚙️ الإجراءات --}}
                 <td>
                   <div class="d-flex flex-column gap-1">
                     <a href="{{ route('sections.edit', ['section_id' => $section->section_id]) }}"
-                       class="btn btn-warning btn-sm">
-                      ✏️ تعديل
-                    </a>
+                       class="btn btn-warning btn-sm">✏️ تعديل</a>
 
                     <form action="{{ route('sections.destroy', ['section_id' => $section->section_id]) }}"
                           method="POST"

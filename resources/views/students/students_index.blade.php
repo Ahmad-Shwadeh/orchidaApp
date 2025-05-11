@@ -1,4 +1,5 @@
-@extends('layout')
+@extends('layouts.layout')
+
 
 @section('title', '👨‍🎓 قائمة الطلاب في الشعبة')
 
@@ -21,7 +22,7 @@
            placeholder="🔍 ابحث برقم الطالب أو الاسم أو الجوال...">
   </div>
 
-  {{-- ✅ جدول الطلاب --}}
+  {{-- ✅ جدول عرض الطلاب --}}
   <div class="card shadow-sm rounded-4 p-4 border-0">
     @if($students->isEmpty())
       <div class="alert alert-info text-center fs-5">🚫 لا يوجد طلاب مسجلون في هذه الشعبة حالياً.</div>
@@ -40,7 +41,7 @@
           </thead>
           <tbody>
             @foreach($students as $student)
-            <form action="{{ route('students.updateStatus', ['student_id' => $student->student_id]) }}" method="POST">
+              <form action="{{ route('students.updateStatus', ['student_id' => $student->student_id]) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <tr>
@@ -51,7 +52,7 @@
                     <select name="status" class="form-select form-select-sm">
                       <option value="جديد"      {{ $student->status == 'جديد' ? 'selected' : '' }}>جديد</option>
                       <option value="إلغاء"     {{ $student->status == 'إلغاء' ? 'selected' : '' }}>إلغاء</option>
-                      <option value="لارد"      {{ $student->status == 'لايرد' ? 'selected' : '' }}>لايرد</option>
+                      <option value="لايرد"     {{ $student->status == 'لايرد' ? 'selected' : '' }}>لا يرد</option>
                       <option value="موعد"      {{ $student->status == 'موعد' ? 'selected' : '' }}>يريد موعد آخر</option>
                       <option value="مدفوع"     {{ $student->status == 'مدفوع' ? 'selected' : '' }}>سجل ودفع</option>
                       <option value="غيرمدفوع" {{ $student->status == 'غيرمدفوع' ? 'selected' : '' }}>سجل لم يدفع</option>
@@ -72,16 +73,17 @@
     @endif
   </div>
 </div>
+
 {{-- ✅ رسائل التنبيه --}}
 @if(session('success'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
+  <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
     {!! session('success') !!}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
   </div>
 @endif
 
 @if(session('error'))
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
     {!! session('error') !!}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
   </div>

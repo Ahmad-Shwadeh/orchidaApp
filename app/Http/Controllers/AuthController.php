@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\UserAdmin;
+use App\Models\Employee;
 
 class AuthController extends Controller
 {
@@ -13,60 +13,57 @@ class AuthController extends Controller
      */
     public function showLogin()
     {
-        // إذا المستخدم سجل مسبقًا ولم يتم تسجيل خروجه
-        if (session()->has('user_name')) {
-            return $this->redirectToDashboard(session('user_name'));
+        if (session()->has('user_role')) {
+            return $this->redirectToDashboard((int) session('user_role'));
         }
 
-        return view('login_user_admin');
+        return view('auth.login_user_admin');
     }
 
     /**
-     * تنفيذ تسجيل الدخول
+     * تنفيذ عملية تسجيل الدخول
      */
     public function login(Request $request)
     {
-        // التحقق من المدخلات
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        // محاولة جلب المستخدم من قاعدة البيانات
-        $user = UserAdmin::where('username', $request->username)
-                         ->where('password', $request->password) // ✅ لاحقًا استخدم Hash::check()
-                         ->first();
+        $user = Employee::where('username', $request->username)
+                        ->where('password', $request->password) // ⚠️ استبدل لاحقًا بـ Hash::check
+                        ->first();
 
         if ($user) {
-            // تخزين بيانات الجلسة
             session([
                 'user_id'   => $user->id,
                 'user_name' => $user->name,
                 'user_role' => $user->role,
             ]);
 
-            // إذا تم تفعيل خيار "تذكرني"
             if ($request->has('remember')) {
                 session(['remember_me' => true, 'last_activity' => now()]);
             }
 
-            // توجيه حسب اسم المستخدم
-            return $this->redirectToDashboard($user->name);
+            return $this->redirectToDashboard((int) $user->role);
         }
 
         return back()->with('error', '❌ اسم المستخدم أو كلمة المرور غير صحيحة');
     }
 
     /**
-     * توجيه المستخدم إلى صفحة الداشبورد المناسبة حسب اسمه
+     * توجيه المستخدم إلى لوحة التحكم الخاصة به حسب الدور
      */
-    private function redirectToDashboard(string $name)
+    private function redirectToDashboard(int $role)
     {
-        return match ($name) {
-            'أبو فراس' => view('abofiras_dashboard'),
-            'أحمد'     => view('ahmad_dashboard'),
-            'ديما'     => view('deema_dashboard'),
-            default    => redirect('/login')->with('error', '🚫 المستخدم غير معروف'),
+        return match ($role) {
+            0 => view('dashboard.abofiras_dashboard'), // Admin
+            1 => view('dashboard.deema_dashboard'),
+            2 => view('dashboard.ahmad_dashboard'),
+            3 => view('dashboard.farah_dashboard'),
+            4 => view('dashboard.noor_dashboard'),
+            5 => view('dashboard.abood_dashboard'),
+            default => redirect('/login')->with('error', '🚫 لا يوجد لوحة تحكم لهذا المستخدم'),
         };
     }
 
@@ -76,6 +73,6 @@ class AuthController extends Controller
     public function logout()
     {
         Session::flush();
-        return redirect('/login')->with('error', '✅ تم تسجيل الخروج بنجاح');
+        return redirect('/login')->with('success', '✅ تم تسجيل الخروج بنجاح');
     }
 }

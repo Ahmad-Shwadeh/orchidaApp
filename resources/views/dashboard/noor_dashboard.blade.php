@@ -1,6 +1,7 @@
-@extends('layout')
+@extends('layouts.layout')
 
-@section('title', 'لوحة التحكم')
+
+@section('title', 'لوحة التحكم - نور')
 
 @section('content')
 <div class="row text-center">

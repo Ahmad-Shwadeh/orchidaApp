@@ -13,7 +13,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        return view('courses_form');
+        return view('courses.courses_form');
     }
 
     /**
@@ -22,11 +22,11 @@ class CourseController extends Controller
     public function index()
     {
         $courses = DB::table('courses')->get();
-        return view('courses_index', compact('courses'));
+        return view('courses.courses_index', compact('courses'));
     }
 
     /**
-     * حفظ دورة جديدة
+     * حفظ دورة جديدة في قاعدة البيانات
      */
     public function store(Request $request)
     {
@@ -35,7 +35,7 @@ class CourseController extends Controller
             'name'          => 'required|string|max:255',
             'hours'         => 'required|integer|min:1',
             'description'   => 'nullable|string',
-            'attachment'    => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
+            'attachment'    => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480',
         ]);
 
         $filename = null;
@@ -65,7 +65,7 @@ class CourseController extends Controller
             return redirect()->route('courses.index')->with('error', '❌ لم يتم العثور على الدورة.');
         }
 
-        return view('courses_edit', compact('course'));
+        return view('courses.courses_edit', compact('course'));
     }
 
     /**
@@ -77,11 +77,10 @@ class CourseController extends Controller
             'name'        => 'required|string|max:255',
             'hours'       => 'required|integer|min:1',
             'description' => 'nullable|string',
-            'attachment'  => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480'
+            'attachment'  => 'nullable|file|mimes:pdf,doc,docx,txt,rtf,odt,xls,xlsx,csv,ods,jpg,jpeg,png,gif,bmp,svg,webp,ppt,pptx,odp,zip,rar,7z,tar,gz|max:20480',
         ]);
 
         $course = DB::table('courses')->where('course_number', $course_number)->first();
-
         if (!$course) {
             return redirect()->route('courses.index')->with('error', '❌ لم يتم العثور على الدورة.');
         }
@@ -95,20 +94,18 @@ class CourseController extends Controller
             $filename = $request->file('attachment')->store('attachments', 'public');
         }
 
-        DB::table('courses')
-            ->where('course_number', $course_number)
-            ->update([
-                'name'        => $request->name,
-                'hours'       => $request->hours,
-                'description' => $request->description,
-                'attachment'  => $filename,
-            ]);
+        DB::table('courses')->where('course_number', $course_number)->update([
+            'name'        => $request->name,
+            'hours'       => $request->hours,
+            'description' => $request->description,
+            'attachment'  => $filename,
+        ]);
 
         return redirect()->route('courses.index')->with('success', '✅ تم تعديل الدورة بنجاح.');
     }
 
     /**
-     * حذف الدورة
+     * حذف الدورة من النظام
      */
     public function destroy($course_number)
     {

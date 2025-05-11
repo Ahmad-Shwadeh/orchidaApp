@@ -1,4 +1,5 @@
-@extends('layout')
+@extends('layouts.layout')
+
 
 @section('title', '🧑‍🎓 تسجيل طالب جديد')
 
@@ -15,22 +16,22 @@
 
   {{-- ✅ رسائل التنبيه --}}
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
       {!! session('success') !!}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
     </div>
   @endif
 
   @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
       {!! session('error') !!}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
     </div>
   @endif
 
   {{-- ✅ نموذج تسجيل الطالب --}}
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-dark text-white">
+  <div class="card shadow-sm mb-4 border-0 rounded-4">
+    <div class="card-header bg-dark text-white fw-bold">
       <i class="bi bi-person-plus-fill"></i> نموذج تسجيل طالب جديد
     </div>
 
@@ -44,27 +45,26 @@
 
         <div class="row mb-3">
           <div class="col-md-4">
-            <label for="student_id" class="form-label">🆔 رقم الطالب</label>
-            <input type="text" name="student_id" id="student_id" class="form-control" required>
+            <label for="student_id" class="form-label fw-bold">🆔 رقم الطالب</label>
+            <input type="text" name="student_id" id="student_id" class="form-control text-center" required>
           </div>
           <div class="col-md-4">
-            <label for="name" class="form-label">👤 الاسم الكامل</label>
-            <input type="text" name="name" id="name" class="form-control" required>
+            <label for="name" class="form-label fw-bold">👤 الاسم الكامل</label>
+            <input type="text" name="name" id="name" class="form-control text-center" required>
           </div>
           <div class="col-md-4">
-            <label for="phone" class="form-label">📞 رقم الجوال</label>
-            <input type="text" name="phone" id="phone" class="form-control" required>
+            <label for="phone" class="form-label fw-bold">📞 رقم الجوال</label>
+            <input type="text" name="phone" id="phone" class="form-control text-center" required>
           </div>
         </div>
 
         <div class="text-end">
-          <button type="submit" class="btn btn-success">
+          <button type="submit" class="btn btn-success fw-bold">
             <i class="bi bi-check2-circle"></i> حفظ الطالب
           </button>
         </div>
       </form>
     </div>
   </div>
-
 </div>
 @endsection

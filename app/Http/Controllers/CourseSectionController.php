@@ -19,7 +19,7 @@ class CourseSectionController extends Controller
             return redirect()->route('courses.index')->with('error', '❌ رقم الدورة غير موجود.');
         }
 
-        return view('course_sections_upload_form', compact('course_number'));
+        return view('sections.course_sections_upload_form', compact('course_number'));
     }
 
     /**
@@ -54,16 +54,16 @@ class CourseSectionController extends Controller
     }
 
     /**
-     * عرض جميع الشعب (غير مستخدمة حالياً)
+     * عرض جميع الشعب (للأغراض العامة)
      */
     public function index()
     {
         $sections = CourseSection::orderBy('start_date')->get();
-        return view('course_sections_index', compact('sections'));
+        return view('sections.course_sections_index', compact('sections'));
     }
 
     /**
-     * عرض الشعب الخاصة بدورة محددة
+     * عرض الشعب التابعة لدورة معينة
      */
     public function viewByCourse($course_number)
     {
@@ -75,11 +75,11 @@ class CourseSectionController extends Controller
 
         $sections = $course->sections ?? [];
 
-        return view('course_sections_index', compact('sections', 'course'));
+        return view('sections.course_sections_index', compact('sections', 'course'));
     }
 
     /**
-     * عرض فورم تعديل شعبة
+     * عرض فورم تعديل الشعبة
      */
     public function edit($section_id)
     {
@@ -89,7 +89,7 @@ class CourseSectionController extends Controller
             return redirect()->back()->with('error', '❌ لم يتم العثور على الشعبة.');
         }
 
-        return view('course_sections_edit', compact('section'));
+        return view('sections.course_sections_edit', compact('section'));
     }
 
     /**

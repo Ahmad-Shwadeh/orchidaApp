@@ -1,4 +1,5 @@
-@extends('layout')
+@extends('layouts.layout')
+
 
 @section('title', 'استيراد بيانات من Excel')
 
@@ -22,6 +23,7 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="إغلاق"></button>
     </div>
   @endif
+
   @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       {!! session('success') !!}
@@ -30,19 +32,21 @@
   @endif
 
   {{-- ✅ نموذج رفع ملف Excel --}}
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-dark text-white">
+  <div class="card shadow-sm mb-4 border-0 rounded-4">
+    <div class="card-header bg-dark text-white fw-bold rounded-top-4">
       <i class="bi bi-upload"></i> رفع ملف Excel
     </div>
     <div class="card-body">
       <form method="POST" action="{{ route('network.importSimple') }}" enctype="multipart/form-data">
         @csrf
+
         <div class="mb-3">
-          <label for="excel_file" class="form-label">📁 اختر ملف Excel من جهازك</label>
-          <input type="file" name="excel_file" id="excel_file" class="form-control" accept=".xls,.xlsx,.csv" required>
+          <label for="excel_file" class="form-label fw-bold">📁 اختر ملف Excel من جهازك</label>
+          <input type="file" name="excel_file" id="excel_file" class="form-control text-center fw-bold"
+                 accept=".xls,.xlsx,.csv" required>
         </div>
 
-        <small class="text-muted mb-3 d-block">
+        <small class="text-muted d-block mb-3">
           ⚠️ سيتم حفظ أسماء المستخدمين من العمود الأول فقط، مع تجاهل القيم الفارغة والمكررة.
         </small>
 
@@ -55,7 +59,6 @@
             <i class="bi bi-folder2-open"></i> فتح مجلد الملفات
           </a>
 
-          {{-- ✅ زر عرض المستخدمين --}}
           <a class="btn btn-info text-white" href="{{ route('network.users') }}">
             <i class="bi bi-people-fill"></i> عرض المستخدمين
           </a>
@@ -66,12 +69,12 @@
 
   {{-- ✅ جدول المعاينة --}}
   @if(isset($headers) && isset($rows))
-    <div class="card shadow-sm mb-4">
-      <div class="card-header bg-secondary text-white">
+    <div class="card shadow-sm mb-4 border-0 rounded-4">
+      <div class="card-header bg-secondary text-white fw-bold">
         <i class="bi bi-table"></i> معاينة المحتوى (أول 10 صفوف)
       </div>
       <div class="card-body table-responsive">
-        <table class="table table-bordered preview-table">
+        <table class="table table-bordered preview-table align-middle">
           <thead class="table-light">
             <tr>
               @foreach($headers as $header)

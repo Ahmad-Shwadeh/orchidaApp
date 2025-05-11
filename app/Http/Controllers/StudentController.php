@@ -26,7 +26,7 @@ class StudentController extends Controller
             ->orderBy('student_id', 'asc')
             ->get();
 
-        return view('students_index', compact('students', 'section'));
+        return view('students.students_index', compact('students', 'section'));
     }
 
     /**
@@ -35,22 +35,20 @@ class StudentController extends Controller
     public function updateStatus(Request $request, $student_id)
     {
         $student = Student::where('student_id', $student_id)->firstOrFail();
-    
+
         $student->status = $request->input('status');
-        $student->notes = $request->input('notes');
+        $student->notes  = $request->input('notes');
         $student->save();
-    
+
         return redirect()->back()->with('success', '✅ تم تحديث حالة الطالب بنجاح.');
     }
-    
-
 
     /**
      * عرض فورم استيراد الطلاب من Excel
      */
     public function showImportForm($course_number, $section_id)
     {
-        return view('students_import_form', compact('course_number', 'section_id'));
+        return view('students.students_import_form', compact('course_number', 'section_id'));
     }
 
     /**
@@ -58,7 +56,7 @@ class StudentController extends Controller
      */
     public function create($course_number, $section_id)
     {
-        return view('students_form', compact('course_number', 'section_id'));
+        return view('students.students_form', compact('course_number', 'section_id'));
     }
 
     /**
@@ -125,6 +123,7 @@ class StudentController extends Controller
             $inserted++;
         }
 
+        // ✅ حفظ الصفوف المرفوضة في ملف قابل للتحميل
         if (!empty($skipped)) {
             $skippedPath = 'public/skipped/students_skipped_' . now()->format('Ymd_His') . '.xlsx';
 
@@ -141,7 +140,7 @@ class StudentController extends Controller
             $skippedLink = asset(str_replace('public/', 'storage/', $skippedPath));
 
             return redirect()->back()->with('error',
-                '⚠️ تم تجاهل بعض الصفوف بسبب أخطاء. <a href="' . $skippedLink . '" class="btn btn-warning btn-sm mt-2" target="_blank">تحميل المرفوضات</a>'
+                '⚠️ تم تجاهل بعض الصفوف بسبب أخطاء. <a href="' . $skippedLink . '" class="btn btn-warning btn-sm mt-2" target="_blank">تحميل الصفوف المرفوضة</a>'
             );
         }
 

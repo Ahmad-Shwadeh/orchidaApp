@@ -1,24 +1,46 @@
 <?php
+
 namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    /**
+     * عرض صفحة Dashboard بناءً على الدور المحفوظ في الجلسة
+     */
     public function index()
     {
-        // تحقق من أن المستخدم مسجل دخول
-        if (!session()->has('user_name')) {
-            return redirect('/login')->with('error', 'الرجاء تسجيل الدخول أولاً');
+        // تحقق من تسجيل الدخول
+        if (!session()->has('user_role')) {
+            return redirect('/login')->with('error', '⚠️ الرجاء تسجيل الدخول أولاً.');
         }
 
-        // جلب اسم المستخدم من الجلسة
+        // استخراج الدور
+        $role = session('user_role');
+
+        // توجيه المستخدم حسب الدور (رقم)
+        return match ($role) {
+            0 => view('dashboard.abofiras_dashboard'),
+            1 => view('dashboard.deema_dashboard'),
+            2 => view('dashboard.ahmad_dashboard'),
+            3 => $this->getEditorDashboard(),
+            default => redirect('/login')->with('error', '🚫 لا يوجد لوحة تحكم مخصصة لهذا الدور'),
+        };
+    }
+
+    /**
+     * توجيه المحررين (role = 3) حسب اسم المستخدم
+     */
+    private function getEditorDashboard()
+    {
         $username = session('user_name');
 
-        // توجيه المستخدم للـ Dashboard الخاص فيه حسب اسمه
         return match ($username) {
-            'ديما'      => view('deema_dashboard'),
-            'أحمد'      => view('ahmad_dashboard'),
-            'أبو فراس'  => view('abofiras_dashboard'),
-            default     => redirect('/login')->with('error', '⚠️ لا يوجد صفحة Dashboard لهذا المستخدم'),
+            'farah'  => view('dashboard.farah_dashboard'),
+            'noor'   => view('dashboard.noor_dashboard'),
+            'abood'  => view('dashboard.abood_dashboard'),
+            default  => redirect('/login')->with('error', '⚠️ لا يوجد Dashboard لهذا المحرر'),
         };
     }
 }

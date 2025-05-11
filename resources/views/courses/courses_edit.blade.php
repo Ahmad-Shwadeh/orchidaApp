@@ -1,4 +1,5 @@
-@extends('layout')
+@extends('layouts.layout')
+
 
 @section('title', 'تعديل دورة')
 
@@ -22,25 +23,25 @@
       {{-- 🔢 رقم الدورة (غير قابل للتعديل) --}}
       <div class="mb-3">
         <label class="form-label fw-bold">🔢 رقم الدورة</label>
-        <input type="text" class="form-control text-center" value="{{ $course->course_number }}" disabled>
+        <input type="text" class="form-control text-center bg-light" value="{{ $course->course_number }}" readonly disabled>
       </div>
 
       {{-- 📘 اسم الدورة --}}
       <div class="mb-3">
         <label class="form-label fw-bold">📘 اسم الدورة</label>
-        <input type="text" name="name" value="{{ $course->name }}" class="form-control text-center" required>
+        <input type="text" name="name" value="{{ $course->name }}" class="form-control text-center fw-bold" required>
       </div>
 
       {{-- ⏱ عدد الساعات --}}
       <div class="mb-3">
         <label class="form-label fw-bold">⏱ عدد الساعات</label>
-        <input type="number" name="hours" value="{{ $course->hours }}" class="form-control text-center" required min="1">
+        <input type="number" name="hours" value="{{ $course->hours }}" class="form-control text-center fw-bold" min="1" required>
       </div>
 
       {{-- 📝 وصف الدورة --}}
       <div class="mb-3">
         <label class="form-label fw-bold">📝 وصف الدورة</label>
-        <textarea name="description" rows="3" class="form-control text-center">{{ $course->description }}</textarea>
+        <textarea name="description" rows="3" class="form-control text-center fw-bold">{{ $course->description }}</textarea>
       </div>
 
       {{-- 📎 عرض المرفق الحالي (إن وجد) --}}
@@ -57,8 +58,8 @@
       {{-- 📤 رفع مرفق جديد (اختياري) --}}
       <div class="mb-3">
         <label class="form-label fw-bold">📤 استبدال المرفق (اختياري)</label>
-        <input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.jpg,.png,.xls,.xlsx,.csv">
-        <small class="text-muted">📌 سيتم حذف المرفق القديم تلقائياً إذا قمت برفع مرفق جديد.</small>
+        <input type="file" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.jpg,.jpeg,.png,.xls,.xlsx,.csv">
+        <small class="text-muted">📌 سيتم حذف المرفق القديم تلقائياً عند رفع مرفق جديد.</small>
       </div>
 
       {{-- ✅ الأزرار --}}

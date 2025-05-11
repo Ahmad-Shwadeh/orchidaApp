@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('auth.auth')
 
 @section('title', 'تسجيل دخول مشترك')
 
@@ -16,6 +16,7 @@
   <div class="card border-0 shadow p-4 mb-5 rounded-4">
     <h4 class="text-center text-success fw-bold mb-4">🔐 تسجيل دخول مشترك جديد</h4>
 
+    {{-- ⚠️ رسائل التحقق --}}
     @if ($errors->any())
       <div class="alert alert-warning text-center">
         <ul class="mb-0 list-unstyled">
@@ -28,12 +29,16 @@
 
     <form method="POST" action="#">
       @csrf
+
       <div class="row mb-3">
+        {{-- 📱 رقم الجوال --}}
         <div class="col-md-6">
           <label class="form-label fw-bold">📱 رقم الجوال</label>
           <input type="text" name="phone" class="form-control text-center fw-bold" placeholder="059XXXXXXX"
                  value="{{ old('phone') }}" required autocomplete="tel">
         </div>
+
+        {{-- 👤 البروفايل المقترح --}}
         <div class="col-md-6">
           <label class="form-label fw-bold">👤 البروفايل المقترح</label>
           <input type="text" name="profile" class="form-control text-center fw-bold" placeholder="اسم البروفايل"
@@ -41,14 +46,18 @@
         </div>
       </div>
 
+      {{-- ⏰ ساعة الدخول --}}
       <div class="mb-4">
         <label class="form-label fw-bold">⏰ ساعة الدخول</label>
         <input type="text" name="login_time" class="form-control text-center fw-bold"
                value="{{ date('g:i A') }}" readonly>
       </div>
 
+      {{-- ✅ زر الدخول --}}
       <div class="d-grid">
-        <button type="submit" class="btn btn-success btn-lg fw-bold">✅ تسجيل الدخول</button>
+        <button type="submit" class="btn btn-success btn-lg fw-bold">
+          <i class="bi bi-person-check-fill"></i> تسجيل الدخول
+        </button>
       </div>
     </form>
   </div>

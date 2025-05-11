@@ -1,30 +1,26 @@
-@extends('layout')
+@extends('layouts.layout')
+
 
 @section('title', 'عرض جميع الدورات')
 
 @section('content')
 <div class="container py-4">
 
-  {{-- ✅ شريط البحث --}}
+  {{-- 🔍 شريط البحث --}}
   <div class="mb-4">
     <input type="text" id="courseSearch" class="form-control text-center fw-bold" placeholder="🔍 ابحث عن دورة برقمها أو اسمها...">
   </div>
 
-  {{-- ✅ عنوان الصفحة وزر إضافة --}}
+  {{-- 📝 العنوان وزر إضافة دورة --}}
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="text-primary fw-bold mb-0">📋 قائمة الدورات</h4>
-    <div class="d-flex gap-2">
-      <a href="{{ route('courses.create') }}" class="btn btn-success">
-        ➕ إضافة دورة جديدة
-      </a>
-      
-    </div>
+    <a href="{{ route('courses.create') }}" class="btn btn-success">➕ إضافة دورة جديدة</a>
   </div>
 
-  {{-- ✅ جدول الدورات --}}
+  {{-- 📋 جدول الدورات --}}
   <div class="card shadow rounded-4 p-4 border-0">
     @if($courses->isEmpty())
-      <p class="text-center text-muted">لا توجد دورات مسجلة حالياً.</p>
+      <p class="text-center text-muted">🚫 لا توجد دورات مسجلة حالياً.</p>
     @else
       <div class="table-responsive">
         <table class="table table-bordered text-center align-middle">
@@ -47,10 +43,10 @@
                 <td>{{ $course->hours }}</td>
                 <td>{{ $course->description }}</td>
 
-                {{-- ✅ المرفق --}}
+                {{-- 📎 المرفق --}}
                 <td>
                   @if($course->attachment)
-                    <div class="d-flex gap-2 justify-content-center">
+                    <div class="d-flex justify-content-center gap-2">
                       <a href="{{ asset('storage/' . $course->attachment) }}" class="btn btn-sm btn-outline-info" target="_blank">👁️ عرض</a>
                       <a href="{{ asset('storage/' . $course->attachment) }}" class="btn btn-sm btn-outline-primary" download>📥 تحميل</a>
                     </div>
@@ -59,19 +55,14 @@
                   @endif
                 </td>
 
-                {{-- ✅ عمود الشعب --}}
+                {{-- 🏫 الشعب --}}
                 <td>
-                  {{-- زر إضافة شعبة --}}
                   <a href="{{ route('sections.uploadForm', ['course_number' => $course->course_number]) }}"
-                     class="btn btn-outline-primary btn-sm mb-2">
-                    🧩 افتح شعبة جديدة
-                  </a>
-                  
-                  {{-- زر عرض الشعب الخاصة بالدورة --}}
-  <a href="{{ route('sections.byCourse', ['course_number' => $course->course_number]) }}" class="btn btn-outline-info btn-sm">
-    📋 عرض الشعب
-  </a>
-                  {{-- روابط الشعب --}}
+                     class="btn btn-outline-primary btn-sm mb-2">🧩 افتح شعبة جديدة</a>
+
+                  <a href="{{ route('sections.byCourse', ['course_number' => $course->course_number]) }}"
+                     class="btn btn-outline-info btn-sm">📋 عرض الشعب</a>
+
                   @if(!empty($course->sections))
                     <div class="mt-2">
                       @foreach($course->sections as $section)
@@ -86,27 +77,22 @@
                   @endif
                 </td>
 
-                {{-- ✅ عمود الإجراءات --}}
-<td class="d-flex flex-column gap-1">
+                {{-- ⚙️ الإجراءات --}}
+                <td class="d-flex flex-column gap-1">
+                  {{-- تعديل --}}
+                  <a href="{{ route('courses.edit', ['course' => $course->course_number]) }}"
+                     class="btn btn-warning btn-sm w-100">✏️ تعديل</a>
 
-  {{-- تعديل الدورة --}}
-  <a href="{{ route('courses.edit', ['course' => $course->course_number]) }}"
-     class="btn btn-warning btn-sm w-100">
-    ✏️ تعديل
-  </a>
-
-  {{-- حذف الدورة --}}
-  <form action="{{ route('courses.destroy', ['course_number' => $course->course_number]) }}" method="POST">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-danger btn-sm w-100"
-            onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الدورة؟')">
-      🗑️ حذف
-    </button>
-  </form>
-
-</td>
-
+                  {{-- حذف --}}
+                  <form action="{{ route('courses.destroy', ['course_number' => $course->course_number]) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm w-100"
+                            onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الدورة؟')">
+                      🗑️ حذف
+                    </button>
+                  </form>
+                </td>
               </tr>
             @endforeach
           </tbody>
@@ -116,7 +102,7 @@
   </div>
 </div>
 
-{{-- ✅ سكربت البحث --}}
+{{-- 🔍 سكربت البحث --}}
 @push('scripts')
 <script>
   document.addEventListener("DOMContentLoaded", function () {

@@ -11,20 +11,31 @@ use App\Http\Controllers\StudentController;
 
 /*
 |--------------------------------------------------------------------------
-| 🏠 صفحات الدخول واللوحة الرئيسية
+| 🏠 صفحة الدخول واللوحة الرئيسية
 |--------------------------------------------------------------------------
 */
 Route::get('/', [DashboardController::class, 'index']);
-Route::view('/login/new', 'login_new_user')->name('login.new.user');
-Route::view('/logout/new', 'logout_new_user')->name('logout.new.user');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ✅ لوحات فرعية للمستخدمين
-Route::view('/dashboard/deema', 'deema_dashboard')->name('dashboard.deema');
-Route::view('/dashboard/ahmad', 'ahmad_dashboard')->name('dashboard.ahmad');
-Route::view('/dashboard/abofiras', 'abofiras_dashboard')->name('dashboard.abofiras');
+// صفحات فرعية لتجريب واجهات (قديمة أو إضافية)
+Route::view('/login/new', 'auth.login_new_user')->name('login.new.user');
+Route::view('/logout/new', 'auth.logout_new_user')->name('logout.new.user');
+
+/*
+|--------------------------------------------------------------------------
+| 🌐 لوحات تحكم حسب الدور (admin, editors)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('dashboard')->group(function () {
+    Route::view('/abofiras', 'auth.abofiras_dashboard')->name('dashboard.abofiras');
+    Route::view('/ahmad', 'auth.ahmad_dashboard')->name('dashboard.ahmad');
+    Route::view('/deema', 'auth.deema_dashboard')->name('dashboard.deema');
+    Route::view('/farah', 'auth.farah_dashboard')->name('dashboard.farah');
+    Route::view('/noor', 'auth.noor_dashboard')->name('dashboard.noor');
+    Route::view('/abood', 'auth.abood_dashboard')->name('dashboard.abood');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +43,7 @@ Route::view('/dashboard/abofiras', 'abofiras_dashboard')->name('dashboard.abofir
 |--------------------------------------------------------------------------
 */
 Route::prefix('mikrotik')->name('mikrotik.')->group(function () {
-    Route::view('/users', 'mikrotik_users')->name('users');
+    Route::view('/users', 'network.mikrotik_users')->name('users');
     Route::get('/import', [MikrotikUserImportController::class, 'showForm'])->name('form');
     Route::post('/preview', [MikrotikUserImportController::class, 'preview'])->name('preview');
     Route::post('/confirm', [MikrotikUserImportController::class, 'import'])->name('import');
@@ -62,8 +73,6 @@ Route::prefix('sections')->name('sections.')->group(function () {
     Route::get('/upload/{course_number}', [CourseSectionController::class, 'showUploadForm'])->name('uploadForm');
     Route::post('/import/{course_number}', [CourseSectionController::class, 'import'])->name('import');
     Route::post('/{course_number}/store', [CourseSectionController::class, 'store'])->name('store');
-
-    // ✅ تعديل وحذف الشعب
     Route::get('/{section_id}/edit', [CourseSectionController::class, 'edit'])->name('edit');
     Route::put('/{section_id}/update', [CourseSectionController::class, 'update'])->name('update');
     Route::delete('/{section_id}', [CourseSectionController::class, 'destroy'])->name('destroy');
@@ -75,15 +84,13 @@ Route::prefix('sections')->name('sections.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('network-users')->name('network.')->group(function () {
-    Route::get('/upload', [NetworkUserController::class, 'showUploadForm'])->name('upload'); // ✅ زر رفع البيانات
+    Route::get('/upload', [NetworkUserController::class, 'showUploadForm'])->name('upload');
     Route::post('/import-simple', [NetworkUserController::class, 'importSimple'])->name('importSimple');
     Route::get('/list', [NetworkUserController::class, 'list'])->name('users');
     Route::delete('/clear', [NetworkUserController::class, 'clearAll'])->name('users.clear');
-
-    // إضافات مستقبلية
-    Route::post('/preview', [NetworkUserController::class, 'preview'])->name('preview');
-    Route::post('/import', [NetworkUserController::class, 'importSelected'])->name('importSelected');
-    Route::get('/index', [NetworkUserController::class, 'index'])->name('index');
+    Route::post('/preview', [NetworkUserController::class, 'preview'])->name('preview'); // مستقبلًا
+    Route::post('/import', [NetworkUserController::class, 'importSelected'])->name('importSelected'); // مستقبلًا
+    Route::get('/index', [NetworkUserController::class, 'index'])->name('index'); // مستقبلًا
 });
 
 /*
@@ -97,7 +104,5 @@ Route::prefix('students')->name('students.')->group(function () {
     Route::post('/store/{course_number}/{section_id}', [StudentController::class, 'store'])->name('store');
     Route::get('/import/{course_number}/{section_id}', [StudentController::class, 'showImportForm'])->name('importForm');
     Route::post('/import/{course_number}/{section_id}', [StudentController::class, 'import'])->name('import');
-
-    // ✅ تحديث الحالة والملاحظات باستخدام student_id
     Route::put('/status/{student_id}', [StudentController::class, 'updateStatus'])->name('updateStatus');
 });

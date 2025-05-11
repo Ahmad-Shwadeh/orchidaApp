@@ -5,14 +5,14 @@
   <title>@yield('title', 'لوحة التحكم | أوركيدا')</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  {{-- Bootstrap & Icons --}}
+  {{-- ✅ Bootstrap & Icons --}}
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
-  {{-- Orchida Theme --}}
+  {{-- ✅ Orchida Theme --}}
   <link rel="stylesheet" href="{{ asset('dist/css/orchida.css') }}">
 
-  {{-- Extra Styles --}}
+  {{-- ✅ إضافات CSS خارجية --}}
   @stack('styles')
 
   <style>
@@ -103,14 +103,16 @@
               <p>الرئيسية</p>
             </a>
           </li>
-          {{-- 🔹 رابط جديد لاستيراد بيانات الشبكة --}}
-                <li class="nav-item">
-                  <a href="{{ route('network.upload') }}" class="nav-link">
-                    <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i> رفع بيانات من ملف اكسل
-                  </a>
-                </li>
 
-          {{-- 🔹 الدورات الأساسية (قائمة منسدلة) --}}
+          {{-- 🔹 رفع بيانات الشبكة --}}
+          <li class="nav-item">
+            <a href="{{ route('network.upload') }}" class="nav-link">
+              <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i>
+              رفع بيانات من ملف اكسل
+            </a>
+          </li>
+
+          {{-- 🔹 قائمة الدورات --}}
           <li class="nav-item">
             <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#coursesMenu" role="button" aria-expanded="false" aria-controls="coursesMenu">
               <span>
@@ -125,7 +127,6 @@
                     <i class="bi bi-table text-primary nav-icon"></i> عرض الدورات
                   </a>
                 </li>
-                
               </ul>
             </div>
           </li>
@@ -144,10 +145,10 @@
 
 </div>
 
-{{-- Bootstrap JS --}}
+{{-- ✅ Bootstrap JS --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-{{-- Extra Scripts --}}
+{{-- ✅ سكربتات إضافية --}}
 @stack('scripts')
 
 </body>
