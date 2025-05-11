@@ -40,7 +40,9 @@
               <th>👨‍🏫 اسم المدرّب</th>
               <th>🔖 الحالة</th>
               <th>🎓 الطلاب</th>
+              @if(in_array(session('user_role'), [0]))
               <th>⚙️ الإجراءات</th>
+              @endif
             </tr>
           </thead>
           <tbody>
@@ -68,18 +70,19 @@
 
                 {{-- 🎓 الطلاب --}}
                 <td>
+                @if(in_array(session('user_role'), [0]))
                   <div class="d-flex flex-column gap-1">
                     <a href="{{ route('students.create', ['course_number' => $course->course_number, 'section_id' => $section->section_id]) }}"
                        class="btn btn-outline-success btn-sm">➕ تسجيل طالب</a>
 
                     <a href="{{ route('students.importForm', [$course->course_number, $section->section_id]) }}"
                        class="btn btn-outline-primary btn-sm">📥 استيراد طلاب</a>
-
+                       @endif
                     <a href="{{ route('students.index', ['section_id' => $section->section_id]) }}"
                        class="btn btn-outline-info btn-sm">👁️ عرض الطلاب</a>
                   </div>
                 </td>
-
+                @if(in_array(session('user_role'), [0]))
                 {{-- ⚙️ الإجراءات --}}
                 <td>
                   <div class="d-flex flex-column gap-1">
@@ -95,6 +98,7 @@
                     </form>
                   </div>
                 </td>
+                @endif
               </tr>
             @endforeach
           </tbody>

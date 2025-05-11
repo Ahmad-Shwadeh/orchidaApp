@@ -84,57 +84,94 @@
 
   {{-- ✅ الشريط الجانبي --}}
   <aside class="app-sidebar shadow" data-bs-theme="dark">
-    <div class="sidebar-brand text-end pe-3">
-      <a href="{{ url('/') }}" class="brand-link d-flex align-items-center gap-2 pe-3">
-        <img src="{{ asset('dist/assets/img/orchida-logo.png') }}" alt="Orchida Logo"
-             style="max-height: 75px; display: block; margin: 10px auto;" />
-        <span class="brand-text fw-light fs-4 text-white">أوركيدا</span>
-      </a>
-    </div>
+  <div class="sidebar-brand text-end pe-3">
+    <a href="{{ url('/') }}" class="brand-link d-flex align-items-center gap-2 pe-3">
+      <img src="{{ asset('dist/assets/img/orchida-logo.png') }}" alt="Orchida Logo"
+           style="max-height: 75px; display: block; margin: 10px auto;" />
+      <span class="brand-text fw-light fs-4 text-white">أوركيدا</span>
+    </a>
+  </div>
 
-    <div class="sidebar-wrapper">
-      <nav class="mt-2">
-        <ul class="nav sidebar-menu flex-column" role="menu">
+  <div class="sidebar-wrapper">
+    <nav class="mt-2">
+      <ul class="nav sidebar-menu flex-column" role="menu">
 
-          {{-- 🔹 الرئيسية --}}
-          <li class="nav-item">
-            <a href="{{ url('/') }}" class="nav-link">
-              <i class="nav-icon bi bi-house-door-fill"></i>
-              <p>الرئيسية</p>
-            </a>
-          </li>
+        <!-- {{-- 🔹 الرئيسية --}}
+        <li class="nav-item">
+          <a href="{{ url('/') }}" class="nav-link">
+            <i class="nav-icon bi bi-house-door-fill"></i>
+            <p>الرئيسية</p>
+          </a>
+        </li> -->
 
-          {{-- 🔹 رفع بيانات الشبكة --}}
-          <li class="nav-item">
-            <a href="{{ route('network.upload') }}" class="nav-link">
-              <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i>
-              رفع بيانات من ملف اكسل
-            </a>
-          </li>
+        {{-- 🔹 مساحة العمل --}}
+        <li class="nav-item">
+          <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#workspaceMenu" role="button" aria-expanded="false" aria-controls="workspaceMenu">
+            <span><i class="nav-icon bi bi-columns-gap text-warning"></i> مساحة العمل</span>
+            <i class="bi bi-chevron-down small"></i>
+          </a>
+          <div class="collapse ps-3" id="workspaceMenu">
+            <ul class="nav flex-column mt-2">
+            {{-- 🔹 رفع بيانات الشبكة (للمسؤول فقط) --}}
+        @if(session('user_role') == 0)
+        <li class="nav-item">
+          <a href="{{ route('network.upload') }}" class="nav-link">
+            <i class="bi bi-file-earmark-arrow-up-fill text-success nav-icon"></i>
+            رفع اليوزرات
+          </a>
+        </li>
+        @endif
+              <li class="nav-item">
+                <a href="#" class="nav-link disabled text-muted">
+                  <i class="bi bi-clock-history nav-icon"></i> 
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
 
-          {{-- 🔹 قائمة الدورات --}}
-          <li class="nav-item">
-            <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#coursesMenu" role="button" aria-expanded="false" aria-controls="coursesMenu">
-              <span>
-                <i class="nav-icon bi bi-mortarboard-fill text-info"></i> الدورات الأساسية
-              </span>
-              <i class="bi bi-chevron-down small"></i>
-            </a>
-            <div class="collapse ps-3" id="coursesMenu">
-              <ul class="nav flex-column mt-2">
-                <li class="nav-item">
-                  <a href="{{ route('courses.index') }}" class="nav-link">
-                    <i class="bi bi-table text-primary nav-icon"></i> عرض الدورات
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </li>
+        {{-- 🔹 الدورات الأساسية --}}
+        <li class="nav-item">
+          <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#coursesMenu" role="button" aria-expanded="false" aria-controls="coursesMenu">
+            <span><i class="nav-icon bi bi-mortarboard-fill text-info"></i> الدورات الأساسية</span>
+            <i class="bi bi-chevron-down small"></i>
+          </a>
+          <div class="collapse ps-3" id="coursesMenu">
+            <ul class="nav flex-column mt-2">
+              <li class="nav-item">
+                <a href="{{ route('courses.index') }}" class="nav-link">
+                  <i class="bi bi-table text-primary nav-icon"></i> عرض الدورات
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
 
-        </ul>
-      </nav>
-    </div>
-  </aside>
+       
+
+        {{-- 🔹 الخدمات --}}
+        <li class="nav-item">
+          <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#servicesMenu" role="button" aria-expanded="false" aria-controls="servicesMenu">
+            <span><i class="nav-icon bi bi-tools text-danger"></i> الخدمات</span>
+            <i class="bi bi-chevron-down small"></i>
+          </a>
+          <div class="collapse ps-3" id="servicesMenu">
+            <ul class="nav flex-column mt-2">
+              {{-- روابط توضع لاحقاً --}}
+              <li class="nav-item">
+                <a href="#" class="nav-link disabled text-muted">
+                  <i class="bi bi-gear-wide-connected nav-icon"></i> (لم تُحدد بعد)
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+</aside>
+
 
   {{-- ✅ المحتوى الرئيسي --}}
   <main class="app-main">

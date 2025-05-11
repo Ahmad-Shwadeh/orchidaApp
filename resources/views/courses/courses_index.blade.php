@@ -1,6 +1,5 @@
 @extends('layouts.layout')
 
-
 @section('title', 'عرض جميع الدورات')
 
 @section('content')
@@ -14,7 +13,9 @@
   {{-- 📝 العنوان وزر إضافة دورة --}}
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="text-primary fw-bold mb-0">📋 قائمة الدورات</h4>
-    <a href="{{ route('courses.create') }}" class="btn btn-success">➕ إضافة دورة جديدة</a>
+    @if(in_array(session('user_role'), [0]))
+      <a href="{{ route('courses.create') }}" class="btn btn-success">➕ إضافة دورة جديدة</a>
+    @endif
   </div>
 
   {{-- 📋 جدول الدورات --}}
@@ -32,7 +33,9 @@
               <th>📝 الوصف</th>
               <th>📎 المرفق</th>
               <th>🏫 الشعب</th>
-              <th>⚙️ الإجراءات</th>
+              @if(in_array(session('user_role'), [0]))
+                <th>⚙️ الإجراءات</th>
+              @endif
             </tr>
           </thead>
           <tbody>
@@ -42,7 +45,7 @@
                 <td>{{ $course->name }}</td>
                 <td>{{ $course->hours }}</td>
                 <td>{{ $course->description }}</td>
-
+    
                 {{-- 📎 المرفق --}}
                 <td>
                   @if($course->attachment)
@@ -54,11 +57,13 @@
                     <span class="text-muted">لا يوجد</span>
                   @endif
                 </td>
-
+               
                 {{-- 🏫 الشعب --}}
                 <td>
-                  <a href="{{ route('sections.uploadForm', ['course_number' => $course->course_number]) }}"
-                     class="btn btn-outline-primary btn-sm mb-2">🧩 افتح شعبة جديدة</a>
+                  @if(in_array(session('user_role'), [0]))
+                    <a href="{{ route('sections.uploadForm', ['course_number' => $course->course_number]) }}"
+                       class="btn btn-outline-primary btn-sm mb-2">🧩 افتح شعبة جديدة</a>
+                  @endif
 
                   <a href="{{ route('sections.byCourse', ['course_number' => $course->course_number]) }}"
                      class="btn btn-outline-info btn-sm">📋 عرض الشعب</a>
@@ -66,8 +71,7 @@
                   @if(!empty($course->sections))
                     <div class="mt-2">
                       @foreach($course->sections as $section)
-                        <a href="{{ route('sections.show', [$course->course_number, $section->section_id]) }}"
-                           class="badge bg-info text-white text-decoration-none d-inline-block my-1">
+                        <a href="#" class="badge bg-info text-white text-decoration-none d-inline-block my-1">
                           📌 شعبة {{ $section->section_id }}
                         </a>
                       @endforeach
@@ -78,21 +82,21 @@
                 </td>
 
                 {{-- ⚙️ الإجراءات --}}
-                <td class="d-flex flex-column gap-1">
-                  {{-- تعديل --}}
-                  <a href="{{ route('courses.edit', ['course' => $course->course_number]) }}"
-                     class="btn btn-warning btn-sm w-100">✏️ تعديل</a>
+                @if(in_array(session('user_role'), [0]))
+                  <td class="d-flex flex-column gap-1">
+                    <a href="{{ route('courses.edit', ['course' => $course->course_number]) }}"
+                       class="btn btn-warning btn-sm w-100">✏️ تعديل</a>
 
-                  {{-- حذف --}}
-                  <form action="{{ route('courses.destroy', ['course_number' => $course->course_number]) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm w-100"
-                            onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الدورة؟')">
-                      🗑️ حذف
-                    </button>
-                  </form>
-                </td>
+                    <form action="{{ route('courses.destroy', ['course_number' => $course->course_number]) }}" method="POST">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger btn-sm w-100"
+                              onclick="return confirm('هل أنت متأكد أنك تريد حذف هذه الدورة؟')">
+                        🗑️ حذف
+                      </button>
+                    </form>
+                  </td>
+                @endif
               </tr>
             @endforeach
           </tbody>
