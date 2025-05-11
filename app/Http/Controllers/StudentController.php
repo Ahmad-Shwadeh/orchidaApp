@@ -23,14 +23,14 @@ class StudentController extends Controller
         }
 
         $students = Student::where('section_id', $section_id)
-            ->orderBy('student_id', 'asc')
+            ->orderBy('student_id')
             ->get();
 
         return view('students.students_index', compact('students', 'section'));
     }
 
     /**
-     * تحديث الحالة والملاحظات لطالب
+     * تحديث الحالة والملاحظات لطالب واحد (زر فردي)
      */
     public function updateStatus(Request $request, $student_id)
     {
@@ -40,7 +40,27 @@ class StudentController extends Controller
         $student->notes  = $request->input('notes');
         $student->save();
 
-        return redirect()->back()->with('success', '✅ تم تحديث حالة الطالب بنجاح.');
+        return redirect()->back()->with('success', '✅ تم تحديث بيانات الطالب بنجاح.');
+    }
+
+    /**
+     * تحديث الحالة والملاحظات لجميع الطلاب دفعة واحدة (زر حفظ الجميع)
+     */
+    public function bulkUpdate(Request $request)
+    {
+        $statuses = $request->input('status', []);
+        $notes    = $request->input('notes', []);
+
+        foreach ($statuses as $student_id => $status) {
+            $student = Student::where('student_id', $student_id)->first();
+            if ($student) {
+                $student->status = $status;
+                $student->notes  = $notes[$student_id] ?? null;
+                $student->save();
+            }
+        }
+
+        return redirect()->back()->with('success', '✅ تم حفظ التعديلات لجميع الطلاب بنجاح.');
     }
 
     /**
@@ -123,7 +143,6 @@ class StudentController extends Controller
             $inserted++;
         }
 
-        // ✅ حفظ الصفوف المرفوضة في ملف قابل للتحميل
         if (!empty($skipped)) {
             $skippedPath = 'public/skipped/students_skipped_' . now()->format('Ymd_His') . '.xlsx';
 

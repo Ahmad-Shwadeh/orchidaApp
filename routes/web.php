@@ -19,13 +19,13 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// صفحات فرعية لتجريب واجهات (قديمة أو إضافية)
+// صفحات فرعية للواجهات الجديدة
 Route::view('/login/new', 'auth.login_new_user')->name('login.new.user');
 Route::view('/logout/new', 'auth.logout_new_user')->name('logout.new.user');
 
 /*
 |--------------------------------------------------------------------------
-| 🌐 لوحات تحكم حسب الدور (admin, editors)
+| 🌐 لوحات تحكم حسب الدور
 |--------------------------------------------------------------------------
 */
 Route::prefix('dashboard')->group(function () {
@@ -88,9 +88,9 @@ Route::prefix('network-users')->name('network.')->group(function () {
     Route::post('/import-simple', [NetworkUserController::class, 'importSimple'])->name('importSimple');
     Route::get('/list', [NetworkUserController::class, 'list'])->name('users');
     Route::delete('/clear', [NetworkUserController::class, 'clearAll'])->name('users.clear');
-    Route::post('/preview', [NetworkUserController::class, 'preview'])->name('preview'); // مستقبلًا
-    Route::post('/import', [NetworkUserController::class, 'importSelected'])->name('importSelected'); // مستقبلًا
-    Route::get('/index', [NetworkUserController::class, 'index'])->name('index'); // مستقبلًا
+    Route::post('/preview', [NetworkUserController::class, 'preview'])->name('preview');
+    Route::post('/import', [NetworkUserController::class, 'importSelected'])->name('importSelected');
+    Route::get('/index', [NetworkUserController::class, 'index'])->name('index');
 });
 
 /*
@@ -105,4 +105,5 @@ Route::prefix('students')->name('students.')->group(function () {
     Route::get('/import/{course_number}/{section_id}', [StudentController::class, 'showImportForm'])->name('importForm');
     Route::post('/import/{course_number}/{section_id}', [StudentController::class, 'import'])->name('import');
     Route::put('/status/{student_id}', [StudentController::class, 'updateStatus'])->name('updateStatus');
+    Route::put('/bulk-update', [StudentController::class, 'bulkUpdate'])->name('bulkUpdate');
 });
