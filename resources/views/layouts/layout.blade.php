@@ -129,7 +129,7 @@
             </ul>
           </div>
         </li>
-
+@if(in_array(session('user_role'), [0,3]))
         {{-- 🔹 الدورات الأساسية --}}
         <li class="nav-item">
           <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#coursesMenu" role="button" aria-expanded="false" aria-controls="coursesMenu">
@@ -166,7 +166,7 @@
             </ul>
           </div>
         </li>
-
+@endif
       </ul>
     </nav>
   </div>
