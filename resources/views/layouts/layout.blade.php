@@ -103,7 +103,7 @@
             <p>الرئيسية</p>
           </a>
         </li> -->
-
+@if(in_array(session('user_role'), [0,2]))
         {{-- 🔹 مساحة العمل --}}
         <li class="nav-item">
           <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#workspaceMenu" role="button" aria-expanded="false" aria-controls="workspaceMenu">
@@ -129,6 +129,7 @@
             </ul>
           </div>
         </li>
+         @endif
 @if(in_array(session('user_role'), [0,3]))
         {{-- 🔹 الدورات الأساسية --}}
         <li class="nav-item">
@@ -146,9 +147,9 @@
             </ul>
           </div>
         </li>
-
+@endif
        
-
+@if(in_array(session('user_role'), [0]))
         {{-- 🔹 الخدمات --}}
         <li class="nav-item">
           <a class="nav-link d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#servicesMenu" role="button" aria-expanded="false" aria-controls="servicesMenu">
